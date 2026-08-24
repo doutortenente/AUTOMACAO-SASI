@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / "n8n/workflows/sasi-clinical-compile.json"
 SERVICE = ROOT / "services/extracao-clinica-sasi.service"
 INSTALLER = ROOT / "scripts/install-local.sh"
+CI = ROOT / ".github/workflows/ci.yml"
 
 
 class WorkflowContractTests(unittest.TestCase):
@@ -44,6 +45,11 @@ class WorkflowContractTests(unittest.TestCase):
         text = INSTALLER.read_text(encoding="utf-8")
         self.assertIn("rollback_database", text)
         self.assertIn('install -m 0600 "$BACKUP" "$N8N_HOME/database.sqlite"', text)
+        self.assertIn('[[ -f "$N8N_HOME/database.sqlite" ]]', text)
+
+    def test_ci_valida_unidade_systemd(self):
+        text = CI.read_text(encoding="utf-8")
+        self.assertIn("systemd-analyze verify", text)
 
 
 if __name__ == "__main__":

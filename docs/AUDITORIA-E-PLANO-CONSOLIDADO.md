@@ -106,3 +106,12 @@ Já existe workflow n8n, serviço systemd, instalador e 2 testes. Os testes pass
 ## Limite honesto
 
 Os PDFs/fotos clínicos dos leitos citados na conversa não estão presentes. Portanto, o software pode ser entregue e comprovado com dados sintéticos, mas os valores clínicos dos leitos 01–13 permanecem `null`/não certificados até as fontes reais serem fornecidas.
+
+## Auditoria pós-entrega
+
+A revisão posterior endureceu a prova operacional:
+
+- O instalador agora bloqueia qualquer alteração se o banco do n8n não existir, garantindo que o rollback tenha fonte.
+- A automação contínua valida também a unidade do systemd.
+- O motor passou a bloquear BH quando ganhos ou perdas estiverem ausentes, além de rejeitar leitos vazios ou duplicados.
+- O OCR real passou a ser exercitado na automação contínua, sem teste silenciosamente ignorado.

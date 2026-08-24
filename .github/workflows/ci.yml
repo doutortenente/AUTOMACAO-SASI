@@ -17,4 +17,5 @@ jobs:
           python-version: '3.11'
       - run: python3 -m unittest discover -s tests -v
       - run: python3 -m json.tool n8n/workflows/sasi-clinical-compile.json >/dev/null
+      - run: systemd-analyze verify services/extracao-clinica-sasi.service
       - run: bash -n scripts/install-local.sh

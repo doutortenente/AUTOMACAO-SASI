@@ -60,6 +60,7 @@ for required in \
   "$REPO_DIR/services/extracao-clinica-sasi.service"; do
   [[ -f "$required" ]] || { echo "Arquivo obrigatório ausente: $required" >&2; exit 1; }
 done
+[[ -f "$N8N_HOME/database.sqlite" ]] || { echo "Banco n8n ausente: $N8N_HOME/database.sqlite" >&2; exit 1; }
 python3 -m json.tool "$WORKFLOW" >/dev/null
 systemd-analyze --user verify "$REPO_DIR/services/extracao-clinica-sasi.service"
 
