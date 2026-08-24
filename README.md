@@ -31,7 +31,7 @@ bash scripts/install-local.sh --check
 bash scripts/install-local.sh
 ```
 
-O instalador descobre o n8n disponível no sistema, faz cópia de segurança do banco antes da importação, restaura o banco automaticamente se a instalação falhar, liga o motor e testa a saúde dos dois serviços.
+O instalador descobre o n8n disponível no sistema, confirma a credencial autenticada exigida pelo workflow, executa uma compilação sintética, faz cópia de segurança do banco antes da importação, restaura o banco automaticamente se a instalação falhar, liga o motor e testa a saúde dos dois serviços.
 
 ## Verificação
 

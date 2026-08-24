@@ -115,3 +115,9 @@ A revisão posterior endureceu a prova operacional:
 - A automação contínua valida também a unidade do systemd.
 - O motor passou a bloquear BH quando ganhos ou perdas estiverem ausentes, além de rejeitar leitos vazios ou duplicados.
 - O OCR real passou a ser exercitado na automação contínua, sem teste silenciosamente ignorado.
+
+### Terceira auditoria adversarial
+
+- O instalador agora confirma, antes de alterar o banco, que a credencial autenticada exigida pelo workflow realmente existe e tem o tipo correto.
+- A saúde do processo deixou de ser prova suficiente: a instalação executa uma compilação clínica sintética e exige `BH: +200 ml` antes de tocar no n8n.
+- O motor associado passou a rejeitar metadados e identificadores estruturalmente inválidos, séries vazias e conteúdo clínico incompatível com o contrato.

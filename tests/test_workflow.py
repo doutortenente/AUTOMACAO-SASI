@@ -46,6 +46,13 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn("rollback_database", text)
         self.assertIn('install -m 0600 "$BACKUP" "$N8N_HOME/database.sqlite"', text)
         self.assertIn('[[ -f "$N8N_HOME/database.sqlite" ]]', text)
+        self.assertIn("credentials_entity", text)
+        self.assertIn("50b4af75-020e-41c1-84a9-aec2572cc4f1", text)
+
+    def test_installer_prova_compilacao_sintetica(self):
+        text = INSTALLER.read_text(encoding="utf-8")
+        self.assertIn("BH: +200 ml", text)
+        self.assertIn("/v1/compile", text)
 
     def test_ci_valida_unidade_systemd(self):
         text = CI.read_text(encoding="utf-8")

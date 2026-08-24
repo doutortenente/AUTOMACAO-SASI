@@ -17,6 +17,7 @@ if [[ -z "$N8N_CLI" ]]; then
 fi
 WORKFLOW="$REPO_DIR/n8n/workflows/sasi-clinical-compile.json"
 WORKFLOW_ID="5c7ae179-bce1-4f40-a4f2-d78fdaf7723f"
+CREDENTIAL_ID="50b4af75-020e-41c1-84a9-aec2572cc4f1"
 BACKUP=""
 MUTATION_STARTED=0
 
@@ -61,6 +62,20 @@ for required in \
   [[ -f "$required" ]] || { echo "Arquivo obrigatório ausente: $required" >&2; exit 1; }
 done
 [[ -f "$N8N_HOME/database.sqlite" ]] || { echo "Banco n8n ausente: $N8N_HOME/database.sqlite" >&2; exit 1; }
+python3 - "$N8N_HOME/database.sqlite" "$CREDENTIAL_ID" <<'PY'
+import sqlite3
+import sys
+path, credential_id = sys.argv[1:]
+connection = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+try:
+    row = connection.execute(
+        "SELECT name, type FROM credentials_entity WHERE id = ?", (credential_id,)
+    ).fetchone()
+finally:
+    connection.close()
+if row != ("Tijolão Webhook", "httpHeaderAuth"):
+    raise SystemExit(f"Credencial n8n obrigatória ausente ou incompatível: {row!r}")
+PY
 python3 -m json.tool "$WORKFLOW" >/dev/null
 systemd-analyze --user verify "$REPO_DIR/services/extracao-clinica-sasi.service"
 
@@ -77,6 +92,25 @@ systemctl --user daemon-reload
 systemctl --user enable extracao-clinica-sasi.service
 systemctl --user restart extracao-clinica-sasi.service
 wait_http "http://127.0.0.1:8765/healthz" 30
+python3 - <<'PY'
+import json
+import urllib.request
+payload = {
+    "leito": "INSTALACAO",
+    "ganhos": [{"nome": "dieta", "ml": 500}],
+    "perdas": [{"nome": "diurese", "ml": 300}],
+}
+request = urllib.request.Request(
+    "http://127.0.0.1:8765/v1/compile",
+    data=json.dumps(payload).encode(),
+    headers={"Content-Type": "application/json"},
+    method="POST",
+)
+with urllib.request.urlopen(request, timeout=3) as response:
+    result = json.load(response)
+if "BH: +200 ml" not in result.get("texto_clinico", ""):
+    raise SystemExit(f"Motor clínico falhou no teste sintético: {result!r}")
+PY
 
 install -d -m 0700 "$N8N_HOME/backups"
 if [[ -f "$N8N_HOME/database.sqlite" ]]; then
