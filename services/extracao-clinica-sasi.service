@@ -1,0 +1,26 @@
+[Unit]
+Description=SASI Clinical Extraction Engine
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dr/projetos/EXTRACAO-CLINICA-SASI
+Environment="PYTHONPATH=/home/dr/projetos/EXTRACAO-CLINICA-SASI/src"
+ExecStart=/usr/bin/python3 -m extracao_clinica_sasi.server --host 127.0.0.1 --port 8765
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryHigh=192M
+MemoryMax=256M
+
+[Install]
+WantedBy=default.target

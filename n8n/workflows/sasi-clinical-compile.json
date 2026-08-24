@@ -1,0 +1,62 @@
+{
+  "id": "5c7ae179-bce1-4f40-a4f2-d78fdaf7723f",
+  "name": "SASI - Compilar Extração Clínica",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sasi-clinical-compile",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "6b8b2e79-acde-4ec6-9832-27b8413d53b5",
+      "name": "Entrada Clínica",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "33413776-80d5-4279-b7d3-225a51af561c",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "50b4af75-020e-41c1-84a9-aec2572cc4f1",
+          "name": "Tijolão Webhook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8765/v1/compile",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.body ?? $json) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "1898203a-da4b-42eb-a04b-492258bd97a4",
+      "name": "Motor Clínico Local",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 0]
+    }
+  ],
+  "connections": {
+    "Entrada Clínica": {
+      "main": [[{"node": "Motor Clínico Local", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none"
+  },
+  "versionId": "d55eb87e-713b-45b8-a87f-2dab63662a22",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
